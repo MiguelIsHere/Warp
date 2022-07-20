@@ -12,11 +12,13 @@ public class PlayerCube : MonoBehaviour
     public GameObject corpse;
 
     CameraController theCamera;
+    GameManager theGameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         theCamera = FindObjectOfType<CameraController>();
+        theGameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -25,16 +27,19 @@ public class PlayerCube : MonoBehaviour
 
         if (isDead) // If the player has died, run the death method
         {
-            PlayerDeath();
+            StartCoroutine(PlayerDeath());
+            theGameManager.deadPlayer = gameObject; // Upon death, the player sets itself as the dead player in GameManager
         }
     }
 
-    void PlayerDeath() // This is for death to traps
+    IEnumerator PlayerDeath() // This is for death to traps
     {
+        while (!playerMesh.activeSelf) yield break; // If player mesh is already deactived, do not run rest of coroutine
+
         Instantiate(corpse, transform.position, transform.rotation); // Spawns the corpse at the location of the player
         playerMesh.SetActive(false); // Disables the player afterwards, giving off the illusion of player falling apart
 
-        theCamera.target = this.gameObject; // Sets the target of the camera to the dead player
-        StartCoroutine(theCamera.DeathCam(this.gameObject));
+        //theCamera.target = this.gameObject; // Sets the target of the camera to the dead player
+        //StartCoroutine(theCamera.DeathCam(this.gameObject));
     }
 }

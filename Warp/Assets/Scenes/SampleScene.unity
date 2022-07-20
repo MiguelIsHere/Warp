@@ -458,11 +458,57 @@ MonoBehaviour:
   player1: {fileID: 1448961819}
   player2: {fileID: 986542179}
   focusPoint: {fileID: 0}
-  target: {fileID: 0}
+  target: {fileID: 987153920}
   calculatedSize: 0
   minimumSize: 10
   zoomSize: 4
   distance: 0
+  isZooming: 0
+--- !u!1 &974469632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 974469634}
+  - component: {fileID: 974469633}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &974469633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974469632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e589613285fc34c845bcdaa3f1c7a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alivePlayers: []
+  deadPlayer: {fileID: 0}
+--- !u!4 &974469634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974469632}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.2845955, y: 1.1244392, z: -1.2345096}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &986542179
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,7 +614,7 @@ GameObject:
   m_Component:
   - component: {fileID: 987153921}
   m_Layer: 0
-  m_Name: Target
+  m_Name: FocusPoint
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -582,7 +628,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987153920}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.36271, y: 13.153657, z: -6.1788883}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
