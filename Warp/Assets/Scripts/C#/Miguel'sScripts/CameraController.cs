@@ -62,11 +62,13 @@ public class CameraController : MonoBehaviour
 
     public IEnumerator DeathCam(GameObject zoomTarget)
     {
+        if (isZooming) yield break;
         float t = 0f;
-        float duration = 5f; //float duration = 300
+        float duration = 10f; //float duration = 300
 
         target = zoomTarget;
         isZooming = true;
+
         //bool isZoomingOut = false;
         Vector3 destination = new Vector3(
             zoomTarget.transform.position.x + (-17.6f),
@@ -85,37 +87,25 @@ public class CameraController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        yield return new WaitUntil(() => transform.position == destination); // Once the camera has reached the destination, zoom back out
-        Debug.Log("Zooming out");
-        target = focusPoint;
+        //yield return new WaitUntil(() => transform.position == destination); // Once the camera has reached the destination, zoom back out
+        yield return new WaitForEndOfFrame();
+
+        target = focusPoint; // Set the target back to the focusPoint of the camera, which is midpoint between two players
+        destination = new Vector3(
+            target.transform.position.x + (-17.6f),
+            21f,
+            target.transform.position.z + (-16.5f)); // Change destination to be based off focusPoint position
+
+        t = 0f; // Reset t
 
         //Return camera to target position and regular size
         while (t < duration)
         {
-            transform.position = Vector3.Lerp(transform.position, target.transform.position, t / duration);
+            transform.position = Vector3.Lerp(transform.position, destination, t / duration);
             theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, calculatedSize, t / duration);
 
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-
-        //for (float t = 0; t < 1.0f; t += Time.deltaTime)
-        //{
-        //    transform.position = Vector3.Lerp(transform.position, destination, t / duration); // Moves the camera over the dead player
-        //    theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, zoomSize, t / duration); // Zoom in the camera on the player's corpse
-
-        //    yield return null;
-        //}
-
-        //yield return null;
-        //target = focusPoint;
-
-        //for (float t = 0; t < 1.0f; t += Time.deltaTime)
-        //{
-        //    transform.position = Vector3.Lerp(transform.position, target.transform.position, t / duration); // Moves the camera over the dead player
-        //    theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, zoomSize, t / duration); // Zoom in the camera on the player's corpse
-
-        //    yield return null;
-        //}
     }
 }
