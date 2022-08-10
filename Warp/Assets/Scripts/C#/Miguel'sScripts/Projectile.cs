@@ -34,6 +34,11 @@ public class Projectile : MonoBehaviour
                 StartCoroutine(Teleport(other.gameObject));
             }
         }
+
+        if (other.CompareTag("Wall")) // If this projectile hit a wall, destroy the projectile
+        {
+            Destroy(gameObject);
+        }
     }
 
     IEnumerator Teleport(GameObject player)

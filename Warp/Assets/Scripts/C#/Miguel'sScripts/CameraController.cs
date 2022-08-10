@@ -36,10 +36,10 @@ public class CameraController : MonoBehaviour
         Vector3 v = (player1.transform.position + player2.transform.position) / 2f; // Calculates the midpoint between the two players
 
         // Calculate cameraSize to use
-        Vector3 p = new Vector3(player1.transform.position.x, 0, player1.transform.position.z);
-        Vector3 P = new Vector3(player2.transform.position.x, 0, player2.transform.position.z);
+        Vector3 p1 = new Vector3(player1.transform.position.x, 0, player1.transform.position.z);
+        Vector3 p2 = new Vector3(player2.transform.position.x, 0, player2.transform.position.z);
 
-        distance = Vector3.Distance(p, P); // Calculates distance between the players
+        distance = Vector3.Distance(p1, p2); // Calculates distance between the players
         calculatedSize = distance * 1.20f;
 
         focusPoint.transform.position = v; // Sets the position of the focusPoint to this position
@@ -47,7 +47,7 @@ public class CameraController : MonoBehaviour
         if (isZooming) return; // If we are zooming in during the deathCam, do not set position of the camera in the transform
 
         float s = Mathf.Clamp(calculatedSize, minimumSize, calculatedSize);
-        theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, s, Time.deltaTime * 3f);
+        theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, s, Time.deltaTime * 4f);
         // If calculatedSize is greater than minimumSize, use the original value. If calculatedSize is smaller than minimumSize, use minimumSize instead.
 
         Vector3 d = new Vector3(
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
     {
         if (isZooming) yield break;
         float t = 0f;
-        float duration = 10f; //float duration = 300
+        float duration = 3f; //float duration = 300
 
         target = zoomTarget;
         isZooming = true;
@@ -80,8 +80,8 @@ public class CameraController : MonoBehaviour
         {
             //Debug.Log("Lerping");
             //if (isZoomingOut == false) 
-            transform.position = Vector3.Lerp(transform.position, destination, t / duration); // Moves the camera over the dead player
-            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, zoomSize, t / duration); // Zoom in the camera on the player's corpse
+            transform.position = Vector3.Lerp(transform.position, destination, t / duration / 2); // Moves the camera over to the dead player
+            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, zoomSize, t / duration / 2); // Zoom in the camera on the player's corpse
 
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -91,6 +91,7 @@ public class CameraController : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         target = focusPoint; // Set the target back to the focusPoint of the camera, which is midpoint between two players
+
         destination = new Vector3(
             target.transform.position.x + (-17.6f),
             21f,
@@ -101,11 +102,31 @@ public class CameraController : MonoBehaviour
         //Return camera to target position and regular size
         while (t < duration)
         {
-            transform.position = Vector3.Lerp(transform.position, destination, t / duration);
-            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, calculatedSize, t / duration);
+            transform.position = Vector3.Lerp(transform.position, destination, (t / duration) / 2);
+
+            float s = Mathf.Clamp(calculatedSize, minimumSize, calculatedSize); // If the calculated size is smaller than minimum size, use minimum size
+            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, calculatedSize, (t / duration) / 2);
 
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+
+        // Revive and re-enable the dead player
+        //GameManager.inst.deadPlayer.GetComponent<PlayerCube>().isDead = false;
+        //GameManager.inst.deadPlayer.GetComponent<PlayerCube>().playerMesh.SetActive(true);
+
+        foreach (GameObject player in GameManager.inst.deadPlayers)
+        {
+            player.GetComponent<PlayerCube>().isDead = false;
+            player.GetComponent<PlayerCube>().playerMesh.SetActive(true);
+        }
+
+        // Destroy the two checkpoints
+        Destroy(GameManager.inst.playerOneSpawn);
+        Destroy(GameManager.inst.playerTwoSpawn);
+        GameManager.inst.deadPlayers.Clear(); // GameManager.inst.deadPlayer = null;
+        isZooming = false;
+
+        GameManager.inst.StartCoroutine(GameManager.inst.SpawnLevel());
     }
 }

@@ -8,24 +8,26 @@ public class StartPointP1 : MonoBehaviour
     public static GameObject spawnpoint1 = null;
 
     GameObject player;
-    GameManager theGameManager;
+
+    //void Awake()
     void Start()
     {
         player = GameObject.Find(playerName); // Finds corresponding player using this string variable
-        theGameManager = FindObjectOfType<GameManager>();
 
         if (spawnpoint1 = null) // If there is no player 1 spawnpoint instance and this spawnpoint corresponds to player 1, set instance to this gameobject
         {
             if (this.playerName == "Player 1")
             {
+                //print("Setting spawn");
                 spawnpoint1 = this.gameObject;
-                theGameManager.StartCoroutine(theGameManager.MovePlayer(player, spawnpoint1));
+                //GameManager.inst.StartCoroutine(GameManager.inst.MovePlayer(player, spawnpoint1));
             }
         }
-        else if (spawnpoint1 != this) // Else, destroy the old instance make this the new instance of player 1 spawnpoint
+        else if (spawnpoint1 != this) // Else, destroy the old instance and make this the new instance of player 1 spawnpoint
         {
             if (this.playerName == "Player 1")
             {
+                print("Destroying old spawn");
                 Destroy(spawnpoint1);
                 spawnpoint1 = this.gameObject;
             }

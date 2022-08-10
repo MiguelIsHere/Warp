@@ -8,6 +8,7 @@ TagManager:
   - Enemy 2
   - Enemy 1
   - Endpoint
+  - Wall
   layers:
   - Default
   - TransparentFX
