@@ -18,10 +18,12 @@ public class GameManager : MonoBehaviour
     CameraController theCamera;
 
     [Header("Level Prefabs")]
-    //public GameObject levelPrefab; // Make this into an array that then randomly selects a level prefab later
-    public GameObject lastLevel, currentLevel; // Stores reference of the previous loaded level so it can be destroyed when new level is created
     public List<GameObject> listOfLevels = new List<GameObject>();
 
+    [Header("Level-Related")]
+    public GameObject lastLevel, currentLevel; // Stores reference of the previous loaded level so it can be destroyed when new level is created
+    GameObject levelToLoad;
+    int levelID;
     public static GameManager inst;
 
     float levelsLoaded = 1; // this is 1 and not 0 as it includes the starting level which will always be the same
@@ -42,13 +44,12 @@ public class GameManager : MonoBehaviour
     {
         playerOneSpawn = StartPointP1.spawnpoint1;
         playerTwoSpawn = StartPointP2.spawnpoint2;
-        if (deadPlayers.Count == 0) //(deadPlayer == null)
+        if (deadPlayers.Count == 0) // If there are no dead players, dont do anything
         {
             return;
         }
         else
         {
-            //theCamera.StartCoroutine(theCamera.DeathCam(deadPlayer));
             theCamera.StartCoroutine(theCamera.DeathCam(deadPlayers[0])); // Focuses the death cam on the first player that died in the round
         }
 
@@ -91,32 +92,43 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        Destroy(lastLevel); // Destroys the previous level off-screen
-        lastLevel = currentLevel; // Changes last level to the new current level
         yield break;
     }
 
     public IEnumerator SpawnLevel()
     {
+
         Vector3 modifier = new Vector3(levelsLoaded, 0, 0); // Multiplies the offset so new levels keep getting created further in the x-axis
 
-        // Gets a random level from the level list
-        int levelID = Random.Range(0, listOfLevels.Count - 1); // Substract 1 from Count because final level is the win level; We don't want to load it
+        
+        while (winner == null)
+        {
+            // Gets a random level from the level list to load
+            levelID = Random.Range(0, listOfLevels.Count - 1); // Substract 1 from Count because final level is the win level; We don't want to load it
                                                                // if no one won
-        GameObject levelToLoad = listOfLevels[levelID];
+        }
+        while (winner != null) // If there is a winner, do not load a random level and load end level instead
+        {
+            levelID = listOfLevels.Count; // End Level should always be final element in list for this to work
+        }
+
+        levelToLoad = listOfLevels[levelID];
 
         // Multiply these two vectors component by component, EX: 100 * modifier.x, 0 * modifier.y, 100 * modifier.z
         offset = Vector3.Scale(new Vector3(60, 0, 0), modifier);
         print("" + offset);
-        //Instantiate(levelPrefab, offset, Quaternion.identity);
 
+        // Load the new level offset from the previous level in the x-axis
         currentLevel = Instantiate(levelToLoad, offset, Quaternion.identity);
+
+        // Increase the number of levels loaded by one
         levelsLoaded += 1;
 
 
-        // Move the players and their marks to the next level
+        
         yield return null;
 
+        // Move the players and their marks to the next level
         StartCoroutine(MovePlayer(player1, playerOneSpawn));
         StartCoroutine(MovePlayer(player1Mark, playerOneSpawn));
         StartCoroutine(MovePlayer(player2, playerTwoSpawn));
@@ -124,5 +136,8 @@ public class GameManager : MonoBehaviour
 
         player1.GetComponent<PlayerCube>().won = false;
         player2.GetComponent<PlayerCube>().won = false;
+
+        Destroy(lastLevel); // Destroys the previous level off-screen
+        lastLevel = currentLevel; // Changes last level to the new current level
     }
 }
