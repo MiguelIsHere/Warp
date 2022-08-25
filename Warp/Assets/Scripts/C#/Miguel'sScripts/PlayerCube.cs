@@ -9,14 +9,20 @@ public class PlayerCube : MonoBehaviour
     public bool isFalling; // Check if this player died by FALLING OFF the map
     public bool isDisabled = false; // Since movement is not physics based, need to disable player first before teleportion for it to work
     public bool won = false; // Used to ensure win is only added once as the win function is under Update
-    public float speed = 5f;
+    public bool isFadingStarted = false;
     public LayerMask whatIsGround;
     public string player;
 
+    public float speed = 5f;
     public float rotationRate = 60f; // This is only meant for rotating the aiming line of the player2, as aiming of player1 is based on mousePosition
+    public float fadeCountdown; // Max value of the countdown before aiming circle fades in/out
+    public float countdown;
 
+    Vector3 rot; // This is the desired rotation for our bullet spawning and aiming circle
     Vector3 velocity;
     //Vector3 offset;
+
+    Color originalColour;
     [Header("References")]
     public GameObject playerMesh;
     public GameObject corpse;
@@ -24,20 +30,23 @@ public class PlayerCube : MonoBehaviour
     public Transform bulletSpawn;
     public Transform aimStart, aimEnd; // Store reference to start and end points of the aiming lines
     public GameObject mark; // P1 and P2 have different marks
+    public GameObject aimCircle; // This is for changing the alpha of the aimCircle sprite
+    public GameObject aimCrosshair; // This is for rotating the crosshair so that it is still somewhat centred on player
 
     CameraController theCamera;
     //Rigidbody rb;
     CharacterController cc;
-    LineRenderer lr;
+    SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         theCamera = FindObjectOfType<CameraController>();
         cc = GetComponent<CharacterController>();
-        lr = GetComponent<LineRenderer>();
+        spriteRenderer = aimCircle.GetComponent<SpriteRenderer>(); // Get the sprite renderer of aimCircle
 
         mark.transform.position = transform.position; // Set default position of mark to be player's position
+        originalColour = spriteRenderer.color; // Stores reference to the original colour of crosshair so we can go back to this color later
     }
 
     // Update is called once per frame
@@ -56,7 +65,7 @@ public class PlayerCube : MonoBehaviour
         {
             UpdateMovement(); 
             Aim();
-            UpdateAimingLine();
+            UpdateAimingCircle();
             //Fire();
             if (Input.GetButtonDown("Fire1 " + player)) // Shoot bullets
             {
@@ -96,7 +105,14 @@ public class PlayerCube : MonoBehaviour
         Vector3 v = new Vector3(Input.GetAxis("Horizontal " + player), 0, Input.GetAxis("Vertical " + player));
         //Debug.Log(player + ": " + Input.GetAxis("Horizontal " + player));
         //Debug.Log(player + ": " + v);
+        if (v != Vector3.zero)
+        {
+            // Make the character smoothly rotate to face direction of movement
+            playerMesh.transform.rotation = Quaternion.Slerp(playerMesh.transform.rotation, Quaternion.LookRotation(v), 0.25f); 
+        }
+
         cc.Move((transform.TransformDirection(v.normalized) * speed + velocity) * Time.deltaTime); // Moves player using inputs
+
     }
 
     void Aim()
@@ -113,13 +129,18 @@ public class PlayerCube : MonoBehaviour
                 Vector3 h = new Vector3(hit.point.x, 0.5f, hit.point.z); // Offset the y of hit so that hit.point and bulletSpawn have the same y value
 
                 // Find vector I need to rotate such that forward Vector of bulletSpawn is pointed towards h
-                Vector3 rot = Quaternion.LookRotation(h - bulletSpawn.transform.position).eulerAngles; 
+                rot = Quaternion.LookRotation(h - bulletSpawn.transform.position).eulerAngles; 
 
                 rot.x = rot.z = 0; // Prevents rotation in x- or z-axis so bullets do not go into the ground; bulletSpawn only rotates in y-axis
                 bulletSpawn.transform.rotation = Quaternion.Euler(rot); // Finally, set the new rotation of bulletSpawn
 
-                //Vector3 h = new Vector3(hit.point.x, 0.5f, hit.point.z);
-                //bulletSpawn.LookAt(h);
+
+                // Check if there is any mouse movement, this will be used by UpdateAimCircle
+                if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+                {
+                    countdown = fadeCountdown;
+                    isFadingStarted = false;
+                }
             }
         }
         else if (player == "P2") // Aiming for player 2
@@ -127,26 +148,93 @@ public class PlayerCube : MonoBehaviour
             if (Input.GetButton("ClockwiseAim"))
             {
                 bulletSpawn.transform.Rotate(0, rotationRate * Time.deltaTime, 0); // Aim clockwise at 180 degrees/s
+                countdown = fadeCountdown;
+                isFadingStarted = false;
             }
             
             if (Input.GetButton("CounterclockwiseAim"))
             {
                 bulletSpawn.transform.Rotate(0, -rotationRate * Time.deltaTime, 0); // Aim counterclockwise at 180 degrees/s
+                countdown = fadeCountdown;
+                isFadingStarted = false;
             }
         }
     }
 
-    void UpdateAimingLine()
+    void UpdateAimingCircle()
     {
-        lr.SetPosition(0, aimStart.position);
-        lr.SetPosition(1, aimEnd.position);
+
+        countdown -= Time.deltaTime;
+        if (countdown <= 0) // When countdown <= zero, the aimCircle will fade out
+        {
+            //StartCoroutine(FadeAimingCircle());
+            StartCoroutine(FadeTo(0.0f));
+        }
+        else // When countdown is above 0, which is when the player is currently aiming, make aimCrosshair appear again
+        {
+            //spriteRenderer.color = originalColour; // Instantly go to the original colour
+            StartCoroutine(FadeTo(1.0f));
+        }
+
+        if (player == "P1")
+        {
+            // Apply a 90-degree counterclockwise rotation around world y-axis so bar of crosshair aligns with trajectory of projectiles
+            Quaternion crosshairRotation = Quaternion.AngleAxis(-90, Vector3.up) * Quaternion.Euler(rot); 
+
+            // Set the rotation
+            aimCrosshair.transform.rotation = crosshairRotation;
+        }
+        if (player == "P2")
+        {
+            if (Input.GetButton("ClockwiseAim"))
+            {
+                aimCrosshair.transform.Rotate(0, rotationRate * Time.deltaTime, 0); // Aim clockwise at 180 degrees/s
+
+            }
+
+            if (Input.GetButton("CounterclockwiseAim"))
+            {
+                aimCrosshair.transform.Rotate(0, -rotationRate * Time.deltaTime, 0); // Aim counterclockwise at 180 degrees/s
+
+            }
+        }
     }
 
-    //void Fire()
+    IEnumerator FadeTo(float aValue)
+    {
+        float alpha = spriteRenderer.color.a;
+
+        while (isFadingStarted == true) yield break;
+        isFadingStarted = true; // Prevents this coroutine from constantly running
+
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime)
+        {
+            Color newColor = new Color(originalColour.r, originalColour.g, originalColour.b, Mathf.Lerp(alpha, aValue, t));
+            spriteRenderer.color = newColor;
+
+            yield return null;
+        }
+
+
+        yield break;
+    }
+    //IEnumerator FadeAimingCircle()
     //{
-    //    if (Input.GetButtonDown("Fire1 " + player))
+    //    Color transparent = spriteRenderer.color;
+    //    transparent = new Color(transparent.r, transparent.g, transparent.b, 0); // Alpha of 0 makes it opaque
+
+    //    while (isFadingStarted == true) yield break;
+
+    //    isFadingStarted = true; // Prevents this coroutine from constantly running
+    //    for (float t = 0.0f; t < 30f; t += Time.deltaTime)
     //    {
-    //        Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
+    //        Color newColour = spriteRenderer.color;
+    //        newColour = Color.Lerp(newColour, transparent, t / 30);
+    //        spriteRenderer.color = newColour; // Set the spriteRenderer's colour to this colour
+
+    //        yield return null;
     //    }
-    //}
+
+    //    yield break;
+    //}  
 }
