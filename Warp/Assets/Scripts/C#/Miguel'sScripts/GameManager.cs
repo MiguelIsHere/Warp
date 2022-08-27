@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator SpawnLevel()
     {
-
+        Debug.Log("Making new level");
         Vector3 modifier = new Vector3(levelsLoaded, 0, 0); // Multiplies the offset so new levels keep getting created further in the x-axis
 
         
@@ -106,12 +106,15 @@ public class GameManager : MonoBehaviour
             // Gets a random level from the level list to load
             levelID = Random.Range(0, listOfLevels.Count - 1); // Substract 1 from Count because final level is the win level; We don't want to load it
                                                                // if no one won
+            break;
         }
         while (winner != null) // If there is a winner, do not load a random level and load end level instead
         {
             levelID = listOfLevels.Count; // End Level should always be final element in list for this to work
+            break;
         }
 
+        Debug.Log("Getting new Level");
         levelToLoad = listOfLevels[levelID];
 
         // Multiply these two vectors component by component, EX: 100 * modifier.x, 0 * modifier.y, 100 * modifier.z
@@ -120,24 +123,32 @@ public class GameManager : MonoBehaviour
 
         // Load the new level offset from the previous level in the x-axis
         currentLevel = Instantiate(levelToLoad, offset, Quaternion.identity);
-
+        Debug.Log("New Level Spawned");
         // Increase the number of levels loaded by one
         levelsLoaded += 1;
 
-
-        
         yield return null;
 
+        Debug.Log("Moving Players");
         // Move the players and their marks to the next level
         StartCoroutine(MovePlayer(player1, playerOneSpawn));
         StartCoroutine(MovePlayer(player1Mark, playerOneSpawn));
         StartCoroutine(MovePlayer(player2, playerTwoSpawn));
         StartCoroutine(MovePlayer(player2Mark, playerTwoSpawn));
 
+        Debug.Log("Reenabling Players");
         player1.GetComponent<PlayerCube>().won = false;
         player2.GetComponent<PlayerCube>().won = false;
 
+        yield return new WaitForSeconds(1.5f); // Add a delay so theres enough for the players to move away so camera doesnt see lastLevel get destroyed
         Destroy(lastLevel); // Destroys the previous level off-screen
         lastLevel = currentLevel; // Changes last level to the new current level
+
+        //while (winner != null) // If there is a winner, switch from regular level music to victory music
+        //{
+        //    SoundManager.instance.StopPlaying("LevelMusic");
+        //}
+
+        yield break;
     }
 }

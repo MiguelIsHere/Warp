@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         theCamera = GetComponent<Camera>();
-
+        SoundManager.instance.Play("LevelMusic");
         focusPoint = GameObject.Find("FocusPoint");
         target = focusPoint;
 
@@ -111,22 +111,24 @@ public class CameraController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        // Revive and re-enable the dead player
-        //GameManager.inst.deadPlayer.GetComponent<PlayerCube>().isDead = false;
-        //GameManager.inst.deadPlayer.GetComponent<PlayerCube>().playerMesh.SetActive(true);
-
+        // Revive and re-enable the dead players
+        Debug.Log("Reviving");
         foreach (GameObject player in GameManager.inst.deadPlayers)
         {
             player.GetComponent<PlayerCube>().isDead = false;
             player.GetComponent<PlayerCube>().playerMesh.SetActive(true);
         }
 
+        Debug.Log("Destroying");
         // Destroy the two checkpoints
         Destroy(GameManager.inst.playerOneSpawn);
         Destroy(GameManager.inst.playerTwoSpawn);
         GameManager.inst.deadPlayers.Clear(); // GameManager.inst.deadPlayer = null;
         isZooming = false;
 
+        Debug.Log("Creating New Level");
         GameManager.inst.StartCoroutine(GameManager.inst.SpawnLevel());
+
+        yield break;
     }
 }

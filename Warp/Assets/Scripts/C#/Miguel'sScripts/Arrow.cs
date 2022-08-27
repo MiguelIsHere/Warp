@@ -19,14 +19,14 @@ public class Arrow : MonoBehaviour
     void Update()
     {
         // Move the projectile
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        transform.Translate(Vector3.right * speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider player)
     {
         if (player.CompareTag("Player"))
         {
-            player.GetComponent<PlayerCube>().isDead = true;
+            player.GetComponent<PlayerCube>().isDead = true; // Sets this player to be dead
             Destroy(gameObject);
         }
     }

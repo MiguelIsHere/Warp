@@ -55,7 +55,7 @@ public class PlayerCube : MonoBehaviour
         if (isDead)
         {
             PlayerDeath();
-            //GameManager.inst.deadPlayer = gameObject; // Set the dead Player to be this. This cannot be changed until the next level is loaded
+
             if (GameManager.inst.deadPlayers.Contains(gameObject)) return; // If this player is already part of the deadPlayers list, return
             GameManager.inst.deadPlayers.Add(gameObject); // Add this to the list of deadPlayers
             return;
@@ -66,14 +66,16 @@ public class PlayerCube : MonoBehaviour
             UpdateMovement(); 
             Aim();
             UpdateAimingCircle();
-            //Fire();
-            if (Input.GetButtonDown("Fire1 " + player)) // Shoot bullets
+
+            // Shoot bullets
+            if (Input.GetButtonDown("Fire1 " + player)) 
             {
+                SoundManager.instance.Play("Shoot"); // Play Shoot SFX
                 Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
             }
 
-            //PlaceMark();
-            if (Input.GetButtonDown("Fire2 " + player)) // Place Marks that set teleport destination for enemy player
+            // Place Marks that set teleport destination for enemy player
+            if (Input.GetButtonDown("Fire2 " + player)) 
             {
                 mark.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             }
@@ -89,9 +91,9 @@ public class PlayerCube : MonoBehaviour
         }
     }
 
-    public void PlayerDeath() // This is for death to traps
+    public void PlayerDeath() 
     {
-        if (!playerMesh.activeSelf) return; // If player mesh is already deactived, do not run rest of coroutine
+        if (!playerMesh.activeSelf) return; // If the player is alr dead, dont run rest of code
 
         Instantiate(corpse, transform.position, transform.rotation); // Spawns the corpse at the location of the player
         playerMesh.SetActive(false); // Disables the player afterwards, giving off the illusion of player falling apart
@@ -167,13 +169,13 @@ public class PlayerCube : MonoBehaviour
         countdown -= Time.deltaTime;
         if (countdown <= 0) // When countdown <= zero, the aimCircle will fade out
         {
+            isFadingStarted = false;
             //StartCoroutine(FadeAimingCircle());
             StartCoroutine(FadeTo(0.0f));
         }
         else // When countdown is above 0, which is when the player is currently aiming, make aimCrosshair appear again
         {
-            //spriteRenderer.color = originalColour; // Instantly go to the original colour
-            StartCoroutine(FadeTo(1.0f));
+            spriteRenderer.color = originalColour;
         }
 
         if (player == "P1")
@@ -214,8 +216,6 @@ public class PlayerCube : MonoBehaviour
 
             yield return null;
         }
-
-
         yield break;
     }
     //IEnumerator FadeAimingCircle()

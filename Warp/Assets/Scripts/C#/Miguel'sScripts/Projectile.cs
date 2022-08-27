@@ -45,6 +45,7 @@ public class Projectile : MonoBehaviour
     {
         player.GetComponent<PlayerCube>().isDisabled = true;
         yield return new WaitForSeconds(0.01f); // Need a small delay, otherwise teleportion won't work as movement is not physics-based AKA rb.velocity
+        SoundManager.instance.Play("Teleport"); // Plays teleport SFX 
         player.transform.position = markObject.transform.position;
         yield return new WaitForSeconds(0.01f);
         Debug.Log("Teleporting " + target);
