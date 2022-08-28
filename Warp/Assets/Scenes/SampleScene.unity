@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 29261877}
   - component: {fileID: 29261876}
   m_Layer: 5
-  m_Name: P1 Icon
+  m_Name: P2 Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,8 +289,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1515224230}
   - {fileID: 1855308822}
+  - {fileID: 1515224230}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -781,7 +781,7 @@ GameObject:
   - component: {fileID: 401542796}
   - component: {fileID: 401542795}
   m_Layer: 5
-  m_Name: P2 Score
+  m_Name: P1 Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1630,6 +1630,8 @@ MonoBehaviour:
   lastLevel: {fileID: 387776535}
   currentLevel: {fileID: 0}
   killPlane: {fileID: 1262147109}
+  playerOneCount: {fileID: 401542795}
+  playerTwoCount: {fileID: 1869402463}
 --- !u!4 &974469634
 Transform:
   m_ObjectHideFlags: 0
@@ -1948,7 +1950,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1072086368}
   m_Layer: 5
-  m_Name: P1 Score Holder
+  m_Name: P2 Score Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2044,6 +2046,12 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: b4086669d6283ee4a884af9ebb98849f, type: 3}
     volume: 1
     pitch: 1.1
+    loop: 0
+    source: {fileID: 0}
+  - name: Shatter
+    clip: {fileID: 8300000, guid: 6affb2dc89753b7469626fb1f816d5db, type: 3}
+    volume: 1
+    pitch: 1
     loop: 0
     source: {fileID: 0}
 --- !u!4 &1208975493
@@ -2397,7 +2405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1515224230}
   m_Layer: 5
-  m_Name: P1 Icon Holder
+  m_Name: P2 Icon Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2417,11 +2425,11 @@ RectTransform:
   - {fileID: 29261875}
   - {fileID: 1072086368}
   m_Father: {fileID: 40883339}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -10}
+  m_AnchoredPosition: {x: 10, y: -70}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1537614908
@@ -2466,7 +2474,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1747669165}
   m_Layer: 5
-  m_Name: P2 Score Holder
+  m_Name: P1 Score Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2504,7 +2512,7 @@ GameObject:
   - component: {fileID: 1750331584}
   - component: {fileID: 1750331583}
   m_Layer: 5
-  m_Name: P2 Icon
+  m_Name: P1 Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2608,7 +2616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1855308822}
   m_Layer: 5
-  m_Name: P2 Icon Holder
+  m_Name: P1 Icon Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2628,11 +2636,11 @@ RectTransform:
   - {fileID: 1750331582}
   - {fileID: 1747669165}
   m_Father: {fileID: 40883339}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -70}
+  m_AnchoredPosition: {x: 10, y: -10}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1869402461
@@ -2647,7 +2655,7 @@ GameObject:
   - component: {fileID: 1869402464}
   - component: {fileID: 1869402463}
   m_Layer: 5
-  m_Name: P1 Score
+  m_Name: P2 Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

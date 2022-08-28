@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,6 +31,9 @@ public class GameManager : MonoBehaviour
 
     float levelsLoaded = 1; // this is 1 and not 0 as it includes the starting level which will always be the same
     Vector3 offset;
+
+    [Header("UI")]
+    public TMP_Text playerOneCount, playerTwoCount; // Store reference to the UI Text for the individual players' wins
     private void Awake()
     {
         inst = this;
@@ -78,6 +83,8 @@ public class GameManager : MonoBehaviour
                 loser = player1;
             }
         }
+
+        StartCoroutine(UpdateWinUI());
     }
 
     public IEnumerator MovePlayer(GameObject player, GameObject spawnpoint)
@@ -159,5 +166,22 @@ public class GameManager : MonoBehaviour
         //}
 
         yield break;
+    }
+
+    public IEnumerator UpdateWinUI()
+    {
+        yield return new WaitForSeconds(3.5f); // Wait for first camera transition to zoom in and out
+
+        Debug.Log("Shatter");
+        SoundManager.instance.Play("Shatter"); // Play Shatter SFX, followed shortly by ding SFX
+        yield return new WaitForSeconds(0.1f);
+
+        Debug.Log("Ding");
+        SoundManager.instance.Play("Ding");
+        yield return new WaitForSeconds(0.45f);
+
+        // Update the number of wins in the canvas
+        playerOneCount.text = "" + playerOneWins;
+        playerTwoCount.text = "" + playerTwoWins;
     }
 }
