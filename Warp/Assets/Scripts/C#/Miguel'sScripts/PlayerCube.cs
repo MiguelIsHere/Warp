@@ -18,9 +18,10 @@ public class PlayerCube : MonoBehaviour
     public float fadeCountdown; // Max value of the countdown before aiming circle fades in/out
     public float countdown;
 
+    public Vector3 offset;
     Vector3 rot; // This is the desired rotation for our bullet spawning and aiming circle
     Vector3 velocity;
-    //Vector3 offset;
+    
 
     Color originalColour;
     [Header("References")]
@@ -47,6 +48,8 @@ public class PlayerCube : MonoBehaviour
 
         mark.transform.position = transform.position; // Set default position of mark to be player's position
         originalColour = spriteRenderer.color; // Stores reference to the original colour of crosshair so we can go back to this color later
+
+        //offset = transform.rotation.eulerAngles; // Vector to apply when calculating rotation of character to turn towards
     }
 
     // Update is called once per frame
@@ -95,8 +98,10 @@ public class PlayerCube : MonoBehaviour
     {
         if (!playerMesh.activeSelf) return; // If the player is alr dead, dont run rest of code
 
+        SoundManager.instance.Play("Death"); // Play Death SFX
         Instantiate(corpse, transform.position, transform.rotation); // Spawns the corpse at the location of the player
         playerMesh.SetActive(false); // Disables the player afterwards, giving off the illusion of player falling apart
+        cc.enabled = false; // Disable character controller to make movement of player between levels smoother
     }
 
     void UpdateMovement()
@@ -110,11 +115,14 @@ public class PlayerCube : MonoBehaviour
         if (v != Vector3.zero)
         {
             // Make the character smoothly rotate to face direction of movement
-            playerMesh.transform.rotation = Quaternion.Slerp(playerMesh.transform.rotation, Quaternion.LookRotation(v), 0.25f); 
+            playerMesh.transform.rotation = Quaternion.Slerp(playerMesh.transform.rotation, Quaternion.LookRotation(v + offset), 0.25f); 
         }
 
-        cc.Move((transform.TransformDirection(v.normalized) * speed + velocity) * Time.deltaTime); // Moves player using inputs
-
+        // If the character controller is enabled, move the character
+        if (cc.enabled)
+        {
+            cc.Move((transform.TransformDirection(v.normalized) * speed + velocity) * Time.deltaTime); // Moves player using inputs
+        }
     }
 
     void Aim()
@@ -180,7 +188,7 @@ public class PlayerCube : MonoBehaviour
 
         if (player == "P1")
         {
-            // Apply a 90-degree counterclockwise rotation around world y-axis so bar of crosshair aligns with trajectory of projectiles
+            // Apply a 90-degree counterclockwise rotation around world y-axis to rot so bar of crosshair aligns with trajectory of projectiles
             Quaternion crosshairRotation = Quaternion.AngleAxis(-90, Vector3.up) * Quaternion.Euler(rot); 
 
             // Set the rotation
@@ -217,24 +225,5 @@ public class PlayerCube : MonoBehaviour
             yield return null;
         }
         yield break;
-    }
-    //IEnumerator FadeAimingCircle()
-    //{
-    //    Color transparent = spriteRenderer.color;
-    //    transparent = new Color(transparent.r, transparent.g, transparent.b, 0); // Alpha of 0 makes it opaque
-
-    //    while (isFadingStarted == true) yield break;
-
-    //    isFadingStarted = true; // Prevents this coroutine from constantly running
-    //    for (float t = 0.0f; t < 30f; t += Time.deltaTime)
-    //    {
-    //        Color newColour = spriteRenderer.color;
-    //        newColour = Color.Lerp(newColour, transparent, t / 30);
-    //        spriteRenderer.color = newColour; // Set the spriteRenderer's colour to this colour
-
-    //        yield return null;
-    //    }
-
-    //    yield break;
-    //}  
+    } 
 }

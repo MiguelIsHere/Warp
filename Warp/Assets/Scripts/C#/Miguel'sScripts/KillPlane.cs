@@ -8,6 +8,7 @@ public class KillPlane : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Triggered");
             other.GetComponent<PlayerCube>().isDead = true; // Kill player upon colliding with kill plane
         }
     }

@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour
         Vector3 p2 = new Vector3(player2.transform.position.x, 0, player2.transform.position.z);
 
         distance = Vector3.Distance(p1, p2); // Calculates distance between the players
-        calculatedSize = distance * 1.20f;
+        calculatedSize = distance * 0.8f;
 
         focusPoint.transform.position = v; // Sets the position of the focusPoint to this position
 
@@ -105,28 +105,25 @@ public class CameraController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, destination, (t / duration) / 2);
 
             float s = Mathf.Clamp(calculatedSize, minimumSize, calculatedSize); // If the calculated size is smaller than minimum size, use minimum size
-            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, calculatedSize, (t / duration) / 2);
+            theCamera.orthographicSize = Mathf.Lerp(theCamera.orthographicSize, s, (t / duration) / 2);
 
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
 
         // Revive and re-enable the dead players
-        Debug.Log("Reviving");
         foreach (GameObject player in GameManager.inst.deadPlayers)
         {
             player.GetComponent<PlayerCube>().isDead = false;
             player.GetComponent<PlayerCube>().playerMesh.SetActive(true);
         }
 
-        Debug.Log("Destroying");
         // Destroy the two checkpoints
         Destroy(GameManager.inst.playerOneSpawn);
         Destroy(GameManager.inst.playerTwoSpawn);
         GameManager.inst.deadPlayers.Clear(); // GameManager.inst.deadPlayer = null;
         isZooming = false;
 
-        Debug.Log("Creating New Level");
         GameManager.inst.StartCoroutine(GameManager.inst.SpawnLevel());
 
         yield break;

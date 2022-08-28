@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Level-Related")]
     public GameObject lastLevel, currentLevel; // Stores reference of the previous loaded level so it can be destroyed when new level is created
+    public GameObject killPlane;
     GameObject levelToLoad;
     int levelID;
     public static GameManager inst;
@@ -82,7 +83,6 @@ public class GameManager : MonoBehaviour
     public IEnumerator MovePlayer(GameObject player, GameObject spawnpoint)
     {
         yield return new WaitForSeconds(0.1f);
-        Debug.Log("Moving");
         Vector3 offset = new Vector3(0, 1, 0); // Add this to transform.position of spawnpoint so player is moved on top of it
 
         for (float t = 0; t < 2f; t += Time.deltaTime)
@@ -92,12 +92,19 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        // Reenable character controller of player if there is a character controller attached
+        if (player.GetComponent<CharacterController>())
+        {
+            player.GetComponent<CharacterController>().enabled = true;
+        }
+        
+        // Reenable the kill plane
+        killPlane.SetActive(true);
         yield break;
     }
 
     public IEnumerator SpawnLevel()
     {
-        Debug.Log("Making new level");
         Vector3 modifier = new Vector3(levelsLoaded, 0, 0); // Multiplies the offset so new levels keep getting created further in the x-axis
 
         
@@ -105,12 +112,13 @@ public class GameManager : MonoBehaviour
         {
             // Gets a random level from the level list to load
             levelID = Random.Range(0, listOfLevels.Count - 1); // Substract 1 from Count because final level is the win level; We don't want to load it
-                                                               // if no one won
+                                                               // if no one won. Max is excluded, therefore the highest number correspond to level before final
+                                                               // level in list
             break;
         }
-        while (winner != null) // If there is a winner, do not load a random level and load end level instead
+        while (winner != null) // If there is a winner, do not load a random level and always load end level instead
         {
-            levelID = listOfLevels.Count; // End Level should always be final element in list for this to work
+            levelID = listOfLevels.Count - 1; // End Level should always be final element in list for this to work
             break;
         }
 
@@ -129,14 +137,15 @@ public class GameManager : MonoBehaviour
 
         yield return null;
 
-        Debug.Log("Moving Players");
+        // Disable the kill plane to allow fallen players to move to the next level without dying in the process
+        killPlane.SetActive(false);
+
         // Move the players and their marks to the next level
         StartCoroutine(MovePlayer(player1, playerOneSpawn));
         StartCoroutine(MovePlayer(player1Mark, playerOneSpawn));
         StartCoroutine(MovePlayer(player2, playerTwoSpawn));
         StartCoroutine(MovePlayer(player2Mark, playerTwoSpawn));
 
-        Debug.Log("Reenabling Players");
         player1.GetComponent<PlayerCube>().won = false;
         player2.GetComponent<PlayerCube>().won = false;
 

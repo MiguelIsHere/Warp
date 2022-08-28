@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 955795629731004340}
   - component: {fileID: 955795629731004341}
   - component: {fileID: 955795629731004338}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Trapdoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
