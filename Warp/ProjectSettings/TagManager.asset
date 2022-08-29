@@ -3,12 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Enemy 3
-  - Enemy 2
-  - Enemy 1
-  - Endpoint
-  - Wall
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -16,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - Ground
+  - 
   - 
   - 
   - 
