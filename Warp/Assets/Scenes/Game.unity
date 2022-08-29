@@ -210,7 +210,6 @@ GameObject:
   - component: {fileID: 40883338}
   - component: {fileID: 40883337}
   - component: {fileID: 40883336}
-  - component: {fileID: 40883340}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -301,18 +300,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &40883340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40883335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b051728e49de9548b0cdb04835aa01d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &91805606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1746,7 +1733,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 40883340}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: BackToMainMenu
         m_Mode: 1
@@ -1813,7 +1800,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 40883340}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
           m_MethodName: GrowButton
           m_Mode: 1
@@ -1829,7 +1816,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 40883340}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
           m_MethodName: ShrinkButton
           m_Mode: 1
@@ -2830,104 +2817,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1101847216}
   m_CullTransparentMesh: 1
---- !u!1 &1208975491
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1208975493}
-  - component: {fileID: 1208975492}
-  m_Layer: 0
-  m_Name: SoundManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1208975492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1208975491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95a2382261998a54f8aab9c931eec6f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: Teleport
-    clip: {fileID: 8300000, guid: a6992beca9afed04e90ed5d8fdf93e84, type: 3}
-    volume: 1
-    pitch: 1
-    loop: 0
-    source: {fileID: 0}
-  - name: UISlide
-    clip: {fileID: 8300000, guid: bf58b9e0043097041b5c2ca021ca9f24, type: 3}
-    volume: 0
-    pitch: 1
-    loop: 0
-    source: {fileID: 0}
-  - name: Ding
-    clip: {fileID: 8300000, guid: 4dc6c8cbfd20230448beb0c58828b72e, type: 3}
-    volume: 0
-    pitch: 1.5
-    loop: 0
-    source: {fileID: 0}
-  - name: LevelMusic
-    clip: {fileID: 8300000, guid: a9731e626421ab34dbbe7dbece34648f, type: 3}
-    volume: 0.69
-    pitch: 1
-    loop: 1
-    source: {fileID: 0}
-  - name: VictoryMusic
-    clip: {fileID: 8300000, guid: d8fae99cc7841c943b85b0c5ce3d645a, type: 3}
-    volume: 0.66
-    pitch: 1
-    loop: 1
-    source: {fileID: 0}
-  - name: Shoot
-    clip: {fileID: 8300000, guid: 54c3583660fd21d46832100117b99074, type: 3}
-    volume: 1
-    pitch: 1
-    loop: 0
-    source: {fileID: 0}
-  - name: Death
-    clip: {fileID: 8300000, guid: b4086669d6283ee4a884af9ebb98849f, type: 3}
-    volume: 1
-    pitch: 1.1
-    loop: 0
-    source: {fileID: 0}
-  - name: Shatter
-    clip: {fileID: 8300000, guid: 6affb2dc89753b7469626fb1f816d5db, type: 3}
-    volume: 1
-    pitch: 1
-    loop: 0
-    source: {fileID: 0}
-  - name: Applause
-    clip: {fileID: 8300000, guid: 8ec3d6beaeb2e3142bb3f486bfc2198f, type: 3}
-    volume: 1
-    pitch: 1
-    loop: 0
-    source: {fileID: 0}
---- !u!4 &1208975493
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1208975491}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.23169623, y: 0.45316955, z: 2.5589018}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1262147109
 GameObject:
   m_ObjectHideFlags: 0
@@ -3150,7 +3039,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 40883340}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
           m_MethodName: GrowButton
           m_Mode: 1
@@ -3166,7 +3055,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 40883340}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
           m_MethodName: ShrinkButton
           m_Mode: 1
@@ -4933,6 +4822,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d678c63d6eb994489c66b06f1b9cfae, type: 3}
+--- !u!1001 &6841411582046696696
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6841411583255344251, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_Name
+      value: SoundManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.23169623
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.45316955
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.5589018
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841411583255344253, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 783b7b9f734f7694ca6d2a301c1bdd16, type: 3}
 --- !u!1001 &8320727339910341421
 PrefabInstance:
   m_ObjectHideFlags: 0

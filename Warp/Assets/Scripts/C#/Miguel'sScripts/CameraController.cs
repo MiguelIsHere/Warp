@@ -22,8 +22,9 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        theCamera = GetComponent<Camera>();
-        SoundManager.instance.Play("LevelMusic");
+        theCamera = GetComponent<Camera>(); 
+        SoundManager.instance.Play("LevelMusic"); // Start playing the level BGM and stop playing the menu BGM
+        SoundManager.instance.StopPlaying("MenuMusic");
         focusPoint = GameObject.Find("FocusPoint");
         target = focusPoint;
 
@@ -121,7 +122,7 @@ public class CameraController : MonoBehaviour
         // Destroy the two checkpoints
         Destroy(GameManager.inst.playerOneSpawn);
         Destroy(GameManager.inst.playerTwoSpawn);
-        GameManager.inst.deadPlayers.Clear(); // GameManager.inst.deadPlayer = null;
+        GameManager.inst.deadPlayers.Clear(); 
         isZooming = false;
 
         GameManager.inst.StartCoroutine(GameManager.inst.SpawnLevel());
