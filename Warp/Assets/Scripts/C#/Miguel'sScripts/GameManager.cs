@@ -34,6 +34,15 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     public TMP_Text playerOneCount, playerTwoCount; // Store reference to the UI Text for the individual players' wins
+    public GameObject endScreen;
+    public GameObject menuButton, continueButton;
+    public GameObject winnerText, loserText, winnerName, loserName, winnerIcon, loserIcon; // Disable all of these at the start of the game and reenable them later
+    public Image endScreenBackground;
+    public Sprite playerOneIcon, playerTwoIcon; // Store references to the images that will be changed to reflect the winner and loser's icons
+
+    
+
+    Color endScreenColour;
     private void Awake()
     {
         inst = this;
@@ -43,6 +52,15 @@ public class GameManager : MonoBehaviour
         theCamera = FindObjectOfType<CameraController>();
         playerOneSpawn = StartPointP1.spawnpoint1;
         playerTwoSpawn = StartPointP2.spawnpoint2;
+
+        endScreenColour = endScreenBackground.GetComponent<Image>().color; // Set this color to be the original colour of the endScreen.
+        Color transparent = new Color(0, 0, 0, 0);
+        endScreenBackground.GetComponent<Image>().color = transparent; // Set the endScreen to be transparent so we can fade it in later
+
+        endScreen.SetActive(false); winnerName.SetActive(false); // Disable the endScreen and its children which are all related to end of game's UI
+        loserName.SetActive(false); winnerIcon.SetActive(false); loserIcon.SetActive(false); winnerText.SetActive(false); loserText.SetActive(false);
+        menuButton.SetActive(false); continueButton.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -160,10 +178,12 @@ public class GameManager : MonoBehaviour
         Destroy(lastLevel); // Destroys the previous level off-screen
         lastLevel = currentLevel; // Changes last level to the new current level
 
-        //while (winner != null) // If there is a winner, switch from regular level music to victory music
-        //{
-        //    SoundManager.instance.StopPlaying("LevelMusic");
-        //}
+        while (winner != null) // If there is a winner, switch from regular level music to victory music
+        {
+            SoundManager.instance.StopPlaying("LevelMusic");
+            SoundManager.instance.Play("VictoryMusic");
+            break;
+        }
 
         yield break;
     }
@@ -183,5 +203,97 @@ public class GameManager : MonoBehaviour
         // Update the number of wins in the canvas
         playerOneCount.text = "" + playerOneWins;
         playerTwoCount.text = "" + playerTwoWins;
+
+        while (winner != null)
+        {
+            StartCoroutine(WinScreenReveal(winner)); // If there is winner, start the winScreenReveal
+
+            yield break;
+        }
+    }
+
+    public IEnumerator WinScreenReveal(GameObject nameOfWinner)
+    {
+        // Re-enable the endScreen
+        endScreen.SetActive(true);
+
+        // Set scales of the images to 0,0,0 so we can scale them up later
+        winnerIcon.transform.localScale = Vector3.zero;
+        loserIcon.transform.localScale = Vector3.zero;
+
+        yield return new WaitForSeconds(2.9f); // Wait a few seconds to give players time to move to the final scene
+        // Set the strings and images for the winner and loser's UI
+        while (nameOfWinner == player1)
+        {
+            // If player 1 won, change winner and loser's name to P1 and P2
+            winnerName.GetComponent<TMP_Text>().text = "Player 1";
+            loserName.GetComponent<TMP_Text>().text = "Player 2";
+
+            // Change the icons as well
+            winnerIcon.GetComponent<Image>().sprite = playerOneIcon;
+            loserIcon.GetComponent<Image>().sprite = playerTwoIcon;
+
+            break;
+        }
+
+        while (nameOfWinner == player2)
+        {
+            // If player 2 won, change winner and loser's name to P2 and P1
+            winnerName.GetComponent<TMP_Text>().text = "Player 2";
+            loserName.GetComponent<TMP_Text>().text = "Player 1";
+
+            // Change the icons as well
+            winnerIcon.GetComponent<Image>().sprite = playerTwoIcon;
+            loserIcon.GetComponent<Image>().sprite = playerOneIcon;
+
+            break;
+        }
+
+        // Get the current color of endScreen to use for the transition
+        Color transitionColor = endScreen.GetComponent<Image>().color;
+
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime) // Over one second, fade in the endScreen
+        {
+            transitionColor = Color.Lerp(transitionColor, endScreenColour, t); // Lerp the transitionColor torwards the originalColour over time
+            endScreen.GetComponent<Image>().color = transitionColor; // Set the new colour of endScreen
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f); // Wait for 1 second
+
+        // Re-enable the winner and loser text, these are not the names of the players who won/lost
+        winnerText.SetActive(true); loserText.SetActive(true);
+
+        winnerIcon.SetActive(true);
+        for (float t = 0.0f; t < 0.5f; t += Time.deltaTime)
+        {
+            // Lerp the scale of the winnerIcon first up to 1,1,1
+            winnerIcon.transform.localScale = Vector3.Lerp(winnerIcon.transform.localScale, Vector3.one,  2 * t); // Multiply t by 2 since t < 0.5
+
+            yield return null;
+        }
+        
+        // Re-enable the winner's name after the icon of the winner has popped up
+        winnerName.SetActive(true);
+
+        yield return new WaitForSeconds(0.4f);
+        loserIcon.SetActive(true);
+        for (float t = 0.0f; t < 0.5f; t += Time.deltaTime)
+        {
+            // Lerp the scale of the loserIcon next, up to 1,1,1
+            loserIcon.transform.localScale = Vector3.Lerp(loserIcon.transform.localScale, Vector3.one, 2 * t);
+
+            yield return null;
+        }
+
+        // Re-enable the loser's name after the icon of the loser has popped up
+        loserName.SetActive(true);
+
+        SoundManager.instance.Play("Applause");
+
+        yield return new WaitForSeconds(3f); // Show completed winScreen for at least 3s before the player can close it
+
+        menuButton.SetActive(true); continueButton.SetActive(true);
     }
 }
